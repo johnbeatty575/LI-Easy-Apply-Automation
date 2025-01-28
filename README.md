@@ -19,7 +19,7 @@ This Python-based automation tool streamlines the process of applying for jobs o
 ## Setup Instructions
 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/linkedin_easy_apply.git
+git clone https://github.com/johnbeatty575/LI-Easy-Apply-Automation.git
 cd linkedin_easy_apply
 ```
 3. Install Dependencies
