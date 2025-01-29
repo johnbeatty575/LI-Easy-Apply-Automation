@@ -1,0 +1,10 @@
+# Ignore sensitive files
+config.py
+
+# Ignore logs and database
+logs/
+applications.db
+
+# Ignore WebDriver binaries
+chromedriver.exe
+geckodriver
