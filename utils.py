@@ -1,40 +1,44 @@
-import logging
-
-# Configure logging
-logging.basicConfig(
-    filename='logs/application_logs.log',
-    level=logging.INFO,
-    format='%(asctime)s - %(message)s'
-)
-
-def log_application(job_title, company):
-    """Log details of applied jobs."""
-    logging.info(f"Applied to {job_title} at {company}")
-    
 import sqlite3
+import logging
+from datetime import datetime
 
-# Initialize SQLite database
+# Database setup
 def initialize_db():
-    conn = sqlite3.connect('applications.db')
-    c = conn.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS applications (
-            id INTEGER PRIMARY KEY,
-            job_title TEXT,
-            company TEXT,
-            applied_on DATE DEFAULT CURRENT_DATE
-        )
-    ''')
-    conn.commit()
-    conn.close()
+    try:
+        conn = sqlite3.connect("applications.db")
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS applications (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                job_title TEXT NOT NULL,
+                company TEXT NOT NULL,
+                applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        conn.commit()
+        logging.info("Database initialized successfully.")
+    except Exception as e:
+        logging.error(f"Failed to initialize database: {e}")
+    finally:
+        if conn:
+            conn.close()
 
+# Save application to database
 def save_application(job_title, company):
-    """Save job application details to SQLite."""
-    conn = sqlite3.connect('applications.db')
-    c = conn.cursor()
-    c.execute('''
-        INSERT INTO applications (job_title, company)
-        VALUES (?, ?)
-    ''', (job_title, company))
-    conn.commit()
-    conn.close()
+    try:
+        conn = sqlite3.connect("applications.db")
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO applications (job_title, company) VALUES (?, ?)
+        ''', (job_title, company))
+        conn.commit()
+        logging.info(f"Saved application to database: {job_title} at {company}.")
+    except Exception as e:
+        logging.error(f"Failed to save application to database: {e}")
+    finally:
+        if conn:
+            conn.close()
+
+# Log application to file
+def log_application(job_title, company):
+    logging.info(f"Applied to {job_title} at {company}.")
