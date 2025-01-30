@@ -1,10 +1,10 @@
-from selenium import webdriver # type: ignore
-from selenium.webdriver.common.by import By # type: ignore
-from selenium.webdriver.common.keys import Keys # type: ignore
-from selenium.webdriver.chrome.service import Service # type: ignore
-from selenium.webdriver.support.ui import WebDriverWait # type: ignore
-from selenium.webdriver.support import expected_conditions as EC # type: ignore
-from webdriver_manager.chrome import ChromeDriverManager  # type: ignore # Automate WebDriver installation
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
 from config import USERNAME, PASSWORD, KEYWORDS, LOCATION
 from utils import log_application, initialize_db, save_application
 import time
@@ -20,13 +20,13 @@ logging.basicConfig(
     ]
 )
 
-# Initialize WebDriver with Headless Mode and Automated WebDriver Installation
+# Initialize WebDriver for Chromium on Raspberry Pi
 def initialize_driver():
     try:
-        # Automatically download and install the correct ChromeDriver
+        # Use ChromiumDriver for Raspberry Pi
         service = Service(ChromeDriverManager().install())
         
-        # Configure Chrome options for Headless Mode
+        # Configure Chromium options for Raspberry Pi
         options = webdriver.ChromeOptions()
         options.add_argument("--headless")  # Run in headless mode
         options.add_argument("--disable-gpu")  # Disable GPU acceleration
@@ -34,6 +34,9 @@ def initialize_driver():
         options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
         options.add_argument("--start-maximized")  # Start maximized (even in headless mode)
         options.add_argument("--disable-blink-features=AutomationControlled")  # Disable automation flags
+
+        # Specify the Chromium binary location
+        options.binary_location = "/usr/bin/chromium-browser"
 
         # Initialize the WebDriver
         driver = webdriver.Chrome(service=service, options=options)
@@ -73,13 +76,17 @@ def search_jobs(driver):
         logging.error(f"Failed to search for jobs: {e}")
         raise
 
-# Apply to jobs
+# Apply to jobs (limit to 10 jobs)
 def apply_to_jobs(driver):
     try:
         jobs = driver.find_elements(By.CLASS_NAME, "job-card-container")
         logging.info(f"Found {len(jobs)} jobs to apply to.")
         
+        applied_count = 0
         for job in jobs:
+            if applied_count >= 10:  # Limit to 10 applications
+                break
+            
             try:
                 job.click()
                 time.sleep(2)
@@ -99,6 +106,7 @@ def apply_to_jobs(driver):
                 save_application(job_title, company)
                 log_application(job_title, company)
                 logging.info(f"Applied to {job_title} at {company}.")
+                applied_count += 1
             except Exception as e:
                 logging.warning(f"Skipping job due to error: {e}")
                 continue
