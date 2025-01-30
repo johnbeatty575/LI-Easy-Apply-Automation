@@ -31,16 +31,14 @@ This project automates the application process for LinkedIn's "Easy Apply" job p
 
 ---
 
-## Setup Instructions
+### Limitations 
+- The script applies to a **maximum of 10 jobs** by default. This limit can be adjusted in `main.py`.
+- LinkedIn may flag your account for unusual activity if the script is run too frequently. Add delays between actions to mimic human behavior.
+- The script only works with "Easy Apply" job postings. Multi-step applications are not supported.
 
-### 1. Install Raspberry Pi OS
-1. Download the 64-bit Raspberry Pi OS from the official website: [Raspberry Pi OS](https://www.raspberrypi.com/software/).
-2. Use **Raspberry Pi Imager** to flash the OS to your microSD card.
-3. Enable SSH and Wi-Fi (optional) by creating `ssh` and `wpa_supplicant.conf` files in the boot partition.
+### Contributions
+Contributions are welcome! If you’d like to contribute, please:
 
-### 2. Update the System
-1. Open the terminal and run:
-   ```bash
-   sudo apt update
-   sudo apt upgrade -y
-   sudo apt dist-upgrade -y
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Submit a pull request.
